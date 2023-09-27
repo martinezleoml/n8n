@@ -7,20 +7,13 @@ import {
 	getResourceMapperFields,
 } from '@/api/nodeTypes';
 import { DEFAULT_NODETYPE_VERSION, STORES } from '@/constants';
-import type {
-	INodeTypesState,
-	IResourceLocatorReqParams,
-	ResourceMapperReqParams,
-} from '@/Interface';
+import type { INodeTypesState, DynamicNodeParameters } from '@/Interface';
 import { addHeaders, addNodeTranslation } from '@/plugins/i18n';
 import { omit } from '@/utils';
 import type {
-	ILoadOptions,
 	INode,
-	INodeCredentials,
 	INodeListSearchResult,
 	INodeOutputConfiguration,
-	INodeParameters,
 	INodePropertyOptions,
 	INodeTypeDescription,
 	INodeTypeNameVersion,
@@ -249,25 +242,20 @@ export const useNodeTypesStore = defineStore(STORES.NODE_TYPES, {
 				addHeaders(headers, rootStore.defaultLocale);
 			}
 		},
-		async getNodeParameterOptions(sendData: {
-			nodeTypeAndVersion: INodeTypeNameVersion;
-			path: string;
-			methodName?: string;
-			loadOptions?: ILoadOptions;
-			currentNodeParameters: INodeParameters;
-			credentials?: INodeCredentials;
-		}): Promise<INodePropertyOptions[]> {
+		async getNodeParameterOptions(
+			sendData: DynamicNodeParameters.OptionsRequest,
+		): Promise<INodePropertyOptions[]> {
 			const rootStore = useRootStore();
 			return getNodeParameterOptions(rootStore.getRestApiContext, sendData);
 		},
 		async getResourceLocatorResults(
-			sendData: IResourceLocatorReqParams,
+			sendData: DynamicNodeParameters.ResourceLocatorResultsRequest,
 		): Promise<INodeListSearchResult> {
 			const rootStore = useRootStore();
 			return getResourceLocatorResults(rootStore.getRestApiContext, sendData);
 		},
 		async getResourceMapperFields(
-			sendData: ResourceMapperReqParams,
+			sendData: DynamicNodeParameters.ResourceMapperFieldsRequest,
 		): Promise<ResourceMapperFields | null> {
 			const rootStore = useRootStore();
 			try {

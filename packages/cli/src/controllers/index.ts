@@ -1,4 +1,5 @@
 export { AuthController } from './auth.controller';
+export { DynamicNodeParametersController } from './dynamicNodeParameters.controller';
 export { LdapController } from './ldap.controller';
 export { MeController } from './me.controller';
 export { MFAController } from './mfa.controller';

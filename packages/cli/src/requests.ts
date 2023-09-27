@@ -398,59 +398,6 @@ export declare namespace OAuthRequest {
 }
 
 // ----------------------------------
-//      /node-parameter-options
-// ----------------------------------
-
-export type NodeParameterOptionsRequest = AuthenticatedRequest<
-	{},
-	{},
-	{},
-	{
-		nodeTypeAndVersion: string;
-		methodName: string;
-		path: string;
-		currentNodeParameters: string;
-		credentials: string;
-	}
->;
-
-// ----------------------------------
-//        /node-list-search
-// ----------------------------------
-
-export type NodeListSearchRequest = AuthenticatedRequest<
-	{},
-	{},
-	{},
-	{
-		nodeTypeAndVersion: string;
-		methodName: string;
-		path: string;
-		currentNodeParameters: string;
-		credentials: string;
-		filter?: string;
-		paginationToken?: string;
-	}
->;
-
-// ----------------------------------
-//        /get-mapping-fields
-// ----------------------------------
-
-export type ResourceMapperRequest = AuthenticatedRequest<
-	{},
-	{},
-	{},
-	{
-		nodeTypeAndVersion: string;
-		methodName: string;
-		path: string;
-		currentNodeParameters: string;
-		credentials: string;
-	}
->;
-
-// ----------------------------------
 //             /tags
 // ----------------------------------
 
