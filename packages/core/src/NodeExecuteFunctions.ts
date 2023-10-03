@@ -2469,6 +2469,10 @@ const addExecutionDataFunctions = async (
 			});
 		}
 
+		if (get(runExecutionData, 'executionData.metadata', undefined) === undefined) {
+			runExecutionData.executionData!.metadata = {};
+		}
+
 		let sourceTaskData = get(runExecutionData, `executionData.metadata[${sourceNodeName}]`);
 
 		if (!sourceTaskData) {
@@ -3014,7 +3018,7 @@ export function getExecuteFunctions(
 						};
 
 						try {
-							return await nodeType.supplyData.call(context);
+							return await nodeType.supplyData.call(context, itemIndex);
 						} catch (error) {
 							if (!(error instanceof ExecutionBaseError)) {
 								error = new NodeOperationError(connectedNode, error, {

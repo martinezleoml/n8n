@@ -49,7 +49,7 @@ export class ToolCode implements INodeType {
 				name: 'name',
 				type: 'string',
 				default: '',
-				placeholder: 'My Tool',
+				placeholder: 'My_Tool',
 			},
 			{
 				displayName: 'Description',
@@ -123,9 +123,7 @@ export class ToolCode implements INodeType {
 		],
 	};
 
-	async supplyData(this: IExecuteFunctions): Promise<SupplyData> {
-		const itemIndex = 0;
-
+	async supplyData(this: IExecuteFunctions, itemIndex: number): Promise<SupplyData> {
 		const node = this.getNode();
 		const workflowMode = this.getMode();
 

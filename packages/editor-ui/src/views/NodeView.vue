@@ -246,7 +246,6 @@ import Sticky from '@/components/Sticky.vue';
 import CanvasAddButton from './CanvasAddButton.vue';
 import { v4 as uuid } from 'uuid';
 import type {
-	ConnectionTypes,
 	IConnection,
 	IConnections,
 	IDataObject,
@@ -263,6 +262,7 @@ import type {
 	ITelemetryTrackProperties,
 	IWorkflowBase,
 	Workflow,
+	ConnectionTypes,
 } from 'n8n-workflow';
 import { deepCopy, NodeConnectionType, NodeHelpers, TelemetryHelpers } from 'n8n-workflow';
 import type {
@@ -335,11 +335,7 @@ import {
 } from '@/plugins/jsplumb/N8nPlusEndpointType';
 import { EVENT_ADD_INPUT_ENDPOINT_CLICK } from '@/plugins/jsplumb/N8nAddInputEndpointType';
 import { sourceControlEventBus } from '@/event-bus/source-control';
-import {
-	getConnectorPaintStyleData,
-	OVERLAY_ENDPOINT_ARROW_ID,
-	OVERLAY_REVERSE_ARROW_ID,
-} from '@/utils/nodeViewUtils';
+import { getConnectorPaintStyleData, OVERLAY_ENDPOINT_ARROW_ID } from '@/utils/nodeViewUtils';
 import { useViewStacks } from '@/components/Node/NodeCreator/composables/useViewStacks';
 
 interface AddNodeOptions {
@@ -599,7 +595,7 @@ export default defineComponent({
 			}
 
 			if (this.connectionDragScope.type) {
-				returnClasses.push(`connection-drag-scope-active`);
+				returnClasses.push('connection-drag-scope-active');
 				returnClasses.push(`connection-drag-scope-active-type-${this.connectionDragScope.type}`);
 				returnClasses.push(
 					`connection-drag-scope-active-connection-${this.connectionDragScope.connection}`,
@@ -2102,9 +2098,8 @@ export default defineComponent({
 			targetNodeOuputIndex: number,
 			type: ConnectionTypes,
 		): IConnection | undefined {
-			const nodeConnections = (
-				this.workflowsStore.outgoingConnectionsByNodeName(sourceNodeName) as INodeConnections
-			)[type];
+			const nodeConnections =
+				this.workflowsStore.outgoingConnectionsByNodeName(sourceNodeName)[type];
 			if (nodeConnections) {
 				const connections: IConnection[] | null = nodeConnections[sourceNodeOutputIndex];
 
@@ -2497,9 +2492,8 @@ export default defineComponent({
 					this.historyStore.pushCommandToUndo(new AddConnectionCommand(connectionData));
 				}
 
-				NodeViewUtils.hideOutputNameLabel(info.sourceEndpoint);
-
 				if (!this.isReadOnlyRoute && !this.readOnlyEnv) {
+					NodeViewUtils.hideOutputNameLabel(info.sourceEndpoint);
 					NodeViewUtils.addConnectionActionsOverlay(
 						info.connection,
 						() => {
@@ -2529,15 +2523,10 @@ export default defineComponent({
 						info.connection,
 						OVERLAY_ENDPOINT_ARROW_ID,
 					);
-					const reverseArrow = NodeViewUtils.getOverlay(info.connection, OVERLAY_REVERSE_ARROW_ID);
-					if (sourceInfo.type === NodeConnectionType.Main) {
-						// For some reason the arrow is visible by default, so hide it
-						reverseArrow?.setVisible(false);
-					} else {
+					if (sourceInfo.type !== NodeConnectionType.Main) {
 						// Not "main" connections get a different connection style
 						info.connection.setPaintStyle(getConnectorPaintStyleData(info.connection));
 						endpointArrow?.setVisible(false);
-						reverseArrow?.setVisible(false);
 					}
 				}
 				this.dropPrevented = false;
@@ -2819,7 +2808,7 @@ export default defineComponent({
 			}
 		},
 		onAddInputEndpointClick(endpoint: Endpoint) {
-			if (endpoint && endpoint.__meta) {
+			if (endpoint?.__meta) {
 				this.insertNodeAfterSelected({
 					sourceId: endpoint.__meta.nodeId,
 					index: endpoint.__meta.index,
@@ -3346,9 +3335,8 @@ export default defineComponent({
 			const outputMap = NodeViewUtils.getOutputSummary(
 				data,
 				nodeConnections || [],
-				connectionType as ConnectionTypes,
+				(connectionType as ConnectionTypes) ?? NodeConnectionType.Main,
 			);
-
 			Object.keys(outputMap).forEach((sourceOutputIndex: string) => {
 				Object.keys(outputMap[sourceOutputIndex]).forEach((targetNodeName: string) => {
 					Object.keys(outputMap[sourceOutputIndex][targetNodeName]).forEach(
