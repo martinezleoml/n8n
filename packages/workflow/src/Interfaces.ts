@@ -1622,7 +1622,7 @@ export interface IWebhookDescription {
 	[key: string]: IHttpRequestMethods | WebhookResponseMode | boolean | string | undefined;
 	httpMethod: IHttpRequestMethods | string;
 	isFullPath?: boolean;
-	name: 'default' | 'setup';
+	name: 'default' | 'setup' | 'options';
 	path: string;
 	responseBinaryPropertyName?: string;
 	responseContentType?: string;
