@@ -320,6 +320,10 @@ export type WaitingWebhookRequest = WebhookRequest & {
 
 export interface IWebhookManager {
 	getWebhookMethods?: (path: string) => Promise<IHttpRequestMethods[]>;
+	getWebhookAccessControlOptions?: (
+		path: string,
+		httpMethod: IHttpRequestMethods,
+	) => Promise<IDataObject | null>;
 	executeWebhook(req: WebhookRequest, res: Response): Promise<IResponseCallbackData>;
 }
 

@@ -23,7 +23,6 @@ import {
 	defaultWebhookDescription,
 	httpMethodsProperty,
 	optionsProperty,
-	optionsWebhookDescription,
 	responseBinaryPropertyNameProperty,
 	responseCodeProperty,
 	responseDataProperty,
@@ -61,7 +60,7 @@ export class Webhook extends Node {
 		inputs: [],
 		outputs: ['main'],
 		credentials: credentialsProperty(this.authPropertyName),
-		webhooks: [defaultWebhookDescription, optionsWebhookDescription],
+		webhooks: [defaultWebhookDescription],
 		properties: [
 			authenticationProperty(this.authPropertyName),
 			httpMethodsProperty,
@@ -104,22 +103,6 @@ export class Webhook extends Node {
 		};
 		const req = context.getRequestObject();
 		const resp = context.getResponseObject();
-
-		const webhookName = context.getWebhookName();
-
-		if (webhookName === 'options') {
-			const { allowMethods, allowOrigin, maxAge } = options.accessControl || {};
-			const headers = {
-				'Access-Control-Allow-Methods': (allowMethods as string) || '*',
-				'Access-Control-Allow-Origin': (allowOrigin as string) || '*',
-				'Access-Control-Max-Age': String((maxAge as number) * 1000) || '60000',
-			};
-
-			resp.writeHead(200, headers);
-			return {
-				noWebhookResponse: true,
-			};
-		}
 
 		try {
 			if (options.ignoreBots && isbot(req.headers['user-agent']))

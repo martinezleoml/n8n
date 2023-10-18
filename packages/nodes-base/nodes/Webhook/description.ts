@@ -15,15 +15,6 @@ export const defaultWebhookDescription: IWebhookDescription = {
 	path: '={{$parameter["path"]}}',
 };
 
-export const optionsWebhookDescription: IWebhookDescription = {
-	name: 'options',
-	httpMethod: 'OPTIONS',
-	responseMode: 'onReceived',
-	isFullPath: true,
-	path: '={{$parameter["path"]}}',
-	ndvHideUrl: true,
-};
-
 export const credentialsProperty = (
 	propertyName = 'authentication',
 ): INodeTypeDescription['credentials'] => [

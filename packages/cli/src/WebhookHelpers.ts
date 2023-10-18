@@ -103,6 +103,25 @@ export const webhookRequestHandler =
 		}
 
 		if (method === 'OPTIONS') {
+			const controlRequestMethod = req.headers['access-control-request-method'];
+
+			if (webhookManager.getWebhookAccessControlOptions && controlRequestMethod) {
+				try {
+					const accessControllOptions = await webhookManager.getWebhookAccessControlOptions(
+						path,
+						controlRequestMethod as IHttpRequestMethods,
+					);
+
+					if (accessControllOptions) {
+						const { allowMethods, allowOrigin, maxAge } = accessControllOptions;
+
+						res.header('Access-Control-Allow-Methods', (allowMethods as string) || '*');
+						res.header('Access-Control-Allow-Origin', (allowOrigin as string) || '*');
+						res.header('Access-Control-Max-Age', String((maxAge as number) * 1000) || '60000');
+					}
+				} catch (error) {}
+			}
+
 			return ResponseHelper.sendSuccessResponse(res, {}, true, 204);
 		}
 
