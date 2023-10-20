@@ -11,8 +11,9 @@ import {
 	SETTINGS_LICENSE_CERT_KEY,
 	UNLIMITED_LICENSE_QUOTA,
 } from './constants';
-import { Service } from 'typedi';
+import Container, { Service } from 'typedi';
 import type { BooleanLicenseFeature, NumericLicenseFeature } from './Interfaces';
+import { WorkflowRepository } from './databases/repositories';
 
 type FeatureReturnType = Partial<
 	{
@@ -50,6 +51,7 @@ export class License {
 				loadCertStr: async () => this.loadCertStr(),
 				saveCertStr: async (value: TLicenseBlock) => this.saveCertStr(value),
 				deviceFingerprint: () => instanceId,
+				collectUsageMetrics: async () => this.collectUsageMetrics(),
 			});
 
 			await this.manager.initialize();
@@ -58,6 +60,15 @@ export class License {
 				this.logger.error('Could not initialize license manager sdk', e);
 			}
 		}
+	}
+
+	async collectUsageMetrics() {
+		return [
+			{
+				name: 'activeWorkflows',
+				value: await Container.get(WorkflowRepository).count({ where: { active: true } }),
+			},
+		];
 	}
 
 	async loadCertStr(): Promise<TLicenseBlock> {
